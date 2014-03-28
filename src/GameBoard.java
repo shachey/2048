@@ -2,6 +2,7 @@ import java.awt.Point;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Random;
 
 
 public class GameBoard {
@@ -114,12 +115,35 @@ public class GameBoard {
 		return new Point(x, y);
 	}
 	
-	private boolean isLegal(int x, int y) {
+	public static boolean isLegal(int x, int y) {
 		return (isLegal(x) && isLegal(y));
 	}
 	
-	private boolean isLegal(int x) {
+	public static boolean isLegal(int x) {
 		return (x >= 0 && x <= 3);
+	}
+	
+	public GameBoard getPossibleNextState() {
+		int numSeen = 0;
+		int chosenX = 0, chosenY = 0;
+		Random rand = new Random();
+		for (int x = 0; x < 4; x++) {
+			for (int y = 0; y < 4; y++) {
+				if (board[x][y] == 0 ) {
+					numSeen++;
+					double randomNumber = rand.nextDouble();
+					if (randomNumber <  (1.0d / numSeen)) {
+						chosenX = x; chosenY = y;
+					}
+				}
+			}
+		}
+		
+		int value = rand.nextDouble() < 0.90 ? 2 : 4;
+		GameBoard copy = getCopy();
+		copy.board[chosenX][chosenY] = value;
+		
+		return copy;
 	}
 	
 	public static List<GameBoard> getPossiblePlacementsFromBoard(GameBoard gameBoard) {
